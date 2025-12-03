@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "task-manager": {
+      "command": "python",
+      "args": ["F:\\MCP\\task-manager-mcp\\src\\main.py"],
+      "env": {
+        "TRANSPORT": "stdio"
+      }
+    }
+  }
+}

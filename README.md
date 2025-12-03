@@ -55,3 +55,33 @@ python compile_crops.py
 
 - `vehicle_log.csv` - Log of detected vehicles
 - `tracker.log` - Application logs
+
+## Task Manager MCP Setup
+
+This project is configured to work with the Task Manager MCP server located at `F:\MCP\task-manager-mcp`.
+
+### Requirements
+- Python 3.12+ (currently you have 3.11.9, needs upgrade)
+- OR Docker Desktop running
+
+### Setup Options
+
+#### Option 1: Using Python 3.12+
+1. Upgrade to Python 3.12 or higher
+2. Install the task manager:
+   ```
+   cd F:\MCP\task-manager-mcp
+   pip install -e .
+   ```
+
+#### Option 2: Using Docker
+1. Start Docker Desktop
+2. Build the image:
+   ```
+   cd F:\MCP\task-manager-mcp
+   docker build -t task-manager-mcp .
+   docker run --env-file .env -p 8050:8050 task-manager-mcp
+   ```
+
+### Claude Desktop Configuration
+Copy the contents of `mcp-config.json` to your Claude Desktop configuration file (typically at `%APPDATA%\Claude\claude_desktop_config.json`).
