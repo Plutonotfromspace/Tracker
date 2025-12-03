@@ -9,16 +9,6 @@ venv/
 ENV/
 env/
 
-# Project specific
-*.log
-*.csv
-videos/
-debug_images/
-compiled_canvases/
-
-# YOLO model files
-*.pt
-
 # IDE
 .vscode/
 .idea/
