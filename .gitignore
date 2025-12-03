@@ -9,6 +9,10 @@ venv/
 ENV/
 env/
 
+# Large files
+videos/
+*.pt
+
 # IDE
 .vscode/
 .idea/
