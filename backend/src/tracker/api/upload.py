@@ -19,6 +19,7 @@ from pydantic import BaseModel
 from src.tracker.data.database import get_session
 from src.tracker.data import crud
 from src.tracker.api.auth import require_non_demo_user
+from src.tracker.utils.paths import get_backend_dir
 from sqlmodel import Session
 
 logger = logging.getLogger(__name__)
@@ -43,16 +44,12 @@ def start_video_processing(job_id: str, video_path: str, max_frames: Optional[in
         # Get the Python executable from the virtual environment
         python_exe = sys.executable
         
-        # Path to main.py - use working directory or BACKEND_DIR environment variable
-        backend_dir = Path(os.getenv("BACKEND_DIR", os.getcwd()))
+        # Get backend directory using utility function
+        backend_dir = get_backend_dir(__file__)
         main_script = backend_dir / "main.py"
         
-        # Fallback: if not found in working dir, try relative to this file
         if not main_script.exists():
-            backend_dir = Path(__file__).parent.parent.parent.parent
-            main_script = backend_dir / "main.py"
-            if not main_script.exists():
-                raise FileNotFoundError(f"Could not find main.py. Searched: {main_script}")
+            raise FileNotFoundError(f"Could not find main.py in {backend_dir}")
         
         # Build command arguments
         cmd_args = [
@@ -69,9 +66,9 @@ def start_video_processing(job_id: str, video_path: str, max_frames: Optional[in
         
         logger.info(f"Starting video processing for job {job_id}: {' '.join(cmd_args)}")
         
-        # Create log file for this job - use working directory or environment variable
-        base_dir = Path(os.getenv("BACKEND_DIR", os.getcwd()))
-        log_dir = base_dir / "data" / "logs"
+        # Create log file for this job
+        backend_dir = get_backend_dir(__file__)
+        log_dir = backend_dir / "data" / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
         log_file = log_dir / f"{job_id}.log"
         
@@ -225,13 +222,9 @@ async def upload_demo_video(
     Raises:
         HTTPException: 404 if demo video not found
     """
-    # Path to the demo video - use working directory or BACKEND_DIR environment variable
-    backend_dir = Path(os.getenv("BACKEND_DIR", os.getcwd()))
+    # Path to the demo video
+    backend_dir = get_backend_dir(__file__)
     demo_video_path = backend_dir / "videos" / "World Trade Bridge Oct 16th from 3.22PM to 3.51PM.mp4"
-    
-    # Fallback: if not found in working dir, try relative to this file
-    if not demo_video_path.exists():
-        demo_video_path = Path(__file__).parent.parent.parent.parent / "videos" / "World Trade Bridge Oct 16th from 3.22PM to 3.51PM.mp4"
     
     if not demo_video_path.exists():
         raise HTTPException(

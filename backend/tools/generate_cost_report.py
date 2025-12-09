@@ -23,12 +23,9 @@ import sys
 from pathlib import Path
 
 # Add project root to path
-# Use working directory as base, with fallback to file location
-import os
-project_root = Path(os.getenv("BACKEND_DIR", os.getcwd()))
-# Fallback if we're running the tool from the tools directory
-if not (project_root / "src").exists():
-    project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from src.tracker.utils.paths import get_project_root
+project_root = get_project_root(__file__)
 sys.path.insert(0, str(project_root))
 
 from src.tracker.analytics import get_cost_tracker
