@@ -162,7 +162,7 @@ Create a file `ecs-task-definition.json`:
         }
       },
       "healthCheck": {
-        "command": ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""],
+        "command": ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")' || exit 1"],
         "interval": 30,
         "timeout": 5,
         "retries": 3,
