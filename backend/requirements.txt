@@ -1,0 +1,29 @@
+# Core dependencies
+ultralytics>=8.0.0
+opencv-python>=4.8.0
+supervision>=0.16.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Segmentation (SAM2 for pixel-perfect masks)
+sam2>=1.0
+huggingface_hub>=0.20.0
+
+# OCR for timestamp extraction (optional)
+easyocr>=1.7.0
+
+# Environment variable support
+python-dotenv>=1.0.0
+
+# Database (SQLite + ORM)
+sqlmodel>=0.0.14
+
+# Visualization tools
+matplotlib>=3.7.0
+
+# xAI Grok VLM (for truck classification)
+xai-sdk>=1.0.0
+
+# Type checking (development)
+# mypy>=1.5.0
+# types-opencv-python>=4.8.0

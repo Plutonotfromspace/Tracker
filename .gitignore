@@ -9,9 +9,30 @@ venv/
 ENV/
 env/
 
-# Large files
-videos/
-*.pt
+# Database - NEVER commit database files!
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.secret
+
+# Videos and uploads - too large for Git
+videos/*
+!videos/.gitkeep
+*.mp4
+*.avi
+*.mov
+
+# Data directories
+data/
+backend/data/
+IGNORE/
 
 # IDE
 .vscode/
@@ -24,6 +45,25 @@ videos/
 .DS_Store
 Thumbs.db
 
-# SQLite temp files
-*.db-shm
-*.db-wal
+# Frontend
+node_modules/
+.next/
+out/
+build/
+dist/
+*.log
+
+# Model files - too large
+*.pt
+*.pth
+*.onnx
+*.weights
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
