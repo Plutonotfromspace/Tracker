@@ -23,8 +23,8 @@ env/
 *.secret
 
 # Videos and uploads - too large for Git
-videos/*
-!videos/.gitkeep
+backend/videos/*
+!backend/videos/.gitkeep
 *.mp4
 *.avi
 *.mov
@@ -54,6 +54,8 @@ dist/
 *.log
 
 # Model files - too large
+backend/models/*
+!backend/models/.gitkeep
 *.pt
 *.pth
 *.onnx
