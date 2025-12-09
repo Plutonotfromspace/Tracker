@@ -14,6 +14,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+// Use environment variable for API URL, fallback to localhost for development
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function UploadPage() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
@@ -163,7 +166,7 @@ export default function UploadPage() {
     
     try {
       // Call the demo upload endpoint with 3000 max frames limit
-      const url = new URL("http://localhost:8000/api/upload/demo");
+      const url = new URL(`${API_URL}/api/upload/demo`);
       url.searchParams.append("max_frames", "3000");
       
       const response = await fetch(url.toString(), {

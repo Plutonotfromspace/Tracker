@@ -12,7 +12,7 @@ services:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=${DATABASE_URL:-sqlite:///data/tracker.db}
       - XAI_API_KEY=${XAI_API_KEY}
-      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://frontend:3000}
     volumes:
       # Mount data directory for persistent storage
       - backend_data:/app/data
