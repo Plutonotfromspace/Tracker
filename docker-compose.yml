@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tracker-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///data/tracker.db}
+      - XAI_API_KEY=${XAI_API_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://frontend:3000}
+    volumes:
+      # Mount data directory for persistent storage
+      - backend_data:/app/data
+      # Mount videos directory for video uploads
+      - backend_videos:/app/videos
+      # Mount models directory for AI models
+      - backend_models:/app/models
+    networks:
+      - tracker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tracker-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - tracker-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/api/health',(r)=>{process.exit(r.statusCode===200?0:1)})\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  tracker-network:
+    driver: bridge
+
+volumes:
+  backend_data:
+    driver: local
+  backend_videos:
+    driver: local
+  backend_models:
+    driver: local
