@@ -258,6 +258,7 @@ These are used by Docker and AWS ECS for health monitoring.
 | `DATABASE_URL` | No | `sqlite:///data/tracker.db` | Database connection string |
 | `CORS_ORIGINS` | No | `http://localhost:3000` | Allowed CORS origins |
 | `LOG_LEVEL` | No | `INFO` | Logging level |
+| `BACKEND_DIR` | No | Current working dir | Backend root directory path (auto-set in Docker) |
 
 ### Frontend
 

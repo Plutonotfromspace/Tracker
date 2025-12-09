@@ -4,6 +4,7 @@ FastAPI router for video upload endpoints.
 Provides REST API for uploading videos and creating processing jobs.
 """
 
+import os
 import shutil
 import subprocess
 import sys
@@ -42,12 +43,12 @@ def start_video_processing(job_id: str, video_path: str, max_frames: Optional[in
         # Get the Python executable from the virtual environment
         python_exe = sys.executable
         
-        # Path to main.py (in backend directory)
-        main_script = Path(__file__).parent.parent.parent.parent / "main.py"
+        # Path to main.py - use working directory or BACKEND_DIR environment variable
+        backend_dir = Path(os.getenv("BACKEND_DIR", os.getcwd()))
+        main_script = backend_dir / "main.py"
         
-        # Check if main.py exists, if not it might be in the backend folder
+        # Fallback: if not found in working dir, try relative to this file
         if not main_script.exists():
-            # Try backend/main.py
             backend_dir = Path(__file__).parent.parent.parent.parent
             main_script = backend_dir / "main.py"
             if not main_script.exists():
@@ -68,9 +69,9 @@ def start_video_processing(job_id: str, video_path: str, max_frames: Optional[in
         
         logger.info(f"Starting video processing for job {job_id}: {' '.join(cmd_args)}")
         
-        # Create log file for this job
-        backend_dir = Path(__file__).parent.parent.parent.parent
-        log_dir = backend_dir / "data" / "logs"
+        # Create log file for this job - use working directory or environment variable
+        base_dir = Path(os.getenv("BACKEND_DIR", os.getcwd()))
+        log_dir = base_dir / "data" / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
         log_file = log_dir / f"{job_id}.log"
         
@@ -224,8 +225,13 @@ async def upload_demo_video(
     Raises:
         HTTPException: 404 if demo video not found
     """
-    # Path to the demo video (relative to backend directory)
-    demo_video_path = Path(__file__).parent.parent.parent.parent / "videos" / "World Trade Bridge Oct 16th from 3.22PM to 3.51PM.mp4"
+    # Path to the demo video - use working directory or BACKEND_DIR environment variable
+    backend_dir = Path(os.getenv("BACKEND_DIR", os.getcwd()))
+    demo_video_path = backend_dir / "videos" / "World Trade Bridge Oct 16th from 3.22PM to 3.51PM.mp4"
+    
+    # Fallback: if not found in working dir, try relative to this file
+    if not demo_video_path.exists():
+        demo_video_path = Path(__file__).parent.parent.parent.parent / "videos" / "World Trade Bridge Oct 16th from 3.22PM to 3.51PM.mp4"
     
     if not demo_video_path.exists():
         raise HTTPException(

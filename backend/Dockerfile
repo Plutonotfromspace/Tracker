@@ -26,6 +26,9 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p data/jobs models videos
 
+# Set backend directory environment variable (optional, as WORKDIR is already /app)
+ENV BACKEND_DIR=/app
+
 # Expose port for FastAPI
 EXPOSE 8000
 
