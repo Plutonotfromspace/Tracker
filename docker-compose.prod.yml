@@ -1,0 +1,57 @@
+version: '3.8'
+
+# Production overrides for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  backend:
+    # Use pre-built image from registry for production
+    # image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/tracker-backend:${IMAGE_TAG:-latest}
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+      # AWS Secrets Manager integration
+      - DATABASE_URL=${DATABASE_URL}
+      - XAI_API_KEY=${XAI_API_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    # Remove local volume mounts in production - use EFS or S3 instead
+    volumes: []
+    # AWS ECS will handle logging
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-group: /ecs/tracker-backend
+        awslogs-stream-prefix: backend
+
+  frontend:
+    # Use pre-built image from registry for production
+    # image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/tracker-frontend:${IMAGE_TAG:-latest}
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_TELEMETRY_DISABLED=1
+    # AWS ECS will handle logging
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-group: /ecs/tracker-frontend
+        awslogs-stream-prefix: frontend
+
+# Production networks will be managed by AWS VPC
+networks:
+  tracker-network:
+    driver: bridge
+
+# Production volumes will be managed by AWS EFS or S3
+volumes:
+  backend_data:
+  backend_videos:
+  backend_models:
